@@ -14,6 +14,12 @@ use Jenssegers\Agent\Agent;
 
 class AuthenticationLogResource extends Resource
 {
+    protected static bool $isGloballySearchable = false;
+
+    public static string $defaultSortColumn = 'id';
+
+    public static string $defaultSortDirection = 'desc';
+
     protected static function getNavigationGroup(): ?string
     {
         return __('System');
@@ -36,12 +42,12 @@ class AuthenticationLogResource extends Resource
                 TextColumn::make('location')->formatStateUsing(function ($state){
                     return $state && $state['default'] === false ? $state['city'] . ', ' . $state['state'] : '-';
                 })->sortable()->searchable(),
-                TextColumn::make('login_at'),
+                TextColumn::make('login_at')->dateTime(),
                 BooleanColumn::make('login_successful'),
-                TextColumn::make('logout_at'),
+                TextColumn::make('logout_at')->dateTime(),
                 BooleanColumn::make('cleared_by_user'),
             ])
-            ->defaultSort('id', 'desc')
+            ->defaultSort(static::$defaultSortColumn, static::$defaultSortDirection)
             ->filters([
                 //
             ]);
